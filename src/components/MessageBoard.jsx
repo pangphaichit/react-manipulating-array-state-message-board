@@ -6,25 +6,24 @@ import { useState } from "react";
  * @returns
  *   "Hello all ! This is first message.",
  */
-const [inputText, setInputText] = useState("Hello all ! This is first message.");
-const [messageList, setMessageList] = useState([]);
-const updateText = (event) => {
-  //ใช้กับ onChange เก็บค่าไว้ที่ inputText
-  setInputText(event.target.value);
-};
-const handleAdd = () => {
-  //ก็อปอาเรย์ลงมาก่อนแล้วค่อยแก้ไขใน set แก้ค่า messageList
-  const newMessge = inputText;
-  setMessageList([...messageList, newMessge]);
-};
-const handleDelete = (index) => {
-  const updateList = messageList.filter((item) => {
-    item[index] !== index;
-  });
-  setMessageList(updateList);
-};
 
 function MessageBoard() {
+  const [inputText, setInputText] = useState("");
+  const [messageList, setMessageList] = useState([]);
+  const updateText = (event) => {
+    setInputText(event.target.value);
+  };
+
+  const handleAdd = () => {
+    const newMessge = { id: messageList.length + 1, text: inputText };
+    setMessageList([...messageList, newMessge]);
+  };
+
+  const handleDelete = (deletedId) => {
+    const updateList = messageList.filter((item) => item.id !== deletedId);
+    setMessageList(updateList);
+  };
+
   return (
     <div className="app-wrapper">
       <h1 class="app-title">Message board</h1>
@@ -43,14 +42,21 @@ function MessageBoard() {
           Submit
         </button>
       </div>
+
       <div class="board">
-        {messageList.map((item, index) => {
-          <div key={index} className="message">
-            <h1>{item}</h1>
-            <button className="delete-button" onClick={handleDelete}>
-              x
-            </button>
-          </div>;
+        {messageList.map((item) => {
+          return (
+            <div key={item.id} className="message">
+              <h1>{item.text}</h1>
+              <button
+                className="delete-button"
+                onClick={() => {
+                  handleDelete(item.id);
+                }}>
+                x
+              </button>
+            </div>
+          );
         })}
       </div>
     </div>
